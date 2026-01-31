@@ -1,0 +1,4 @@
+usuario: Hola
+ia: Que tal?
+usuario: Como te llamas?
+ia: Me llamo artur.

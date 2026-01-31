@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artur - Red Neuronal Conversacional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .main-container {
+            display: flex;
+            height: 100vh;
+            padding: 10px;
+            gap: 10px;
+        }
+        
+        .panel-lateral {
+            width: 280px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+        }
+        
+        .panel-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+        }
+        
+        h1 {
+            color: #00b894;
+            border-bottom: 2px solid #00b894;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .header-info {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background-color: #00b894;
+        }
+        
+        .status-offline {
+            background-color: #d63031;
+        }
+        
+        .contadores {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .contador {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .contador .etiqueta {
+            color: #aaaaaa;
+            font-size: 14px;
+        }
+        
+        .contador .numero {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00b894;
+        }
+        
+        .botones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        button {
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0984e3;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+            width: 100%;
+        }
+        
+        button:hover {
+            background-color: #0770c4;
+            transform: translateY(-1px);
+        }
+        
+        button.peligro {
+            background-color: #d63031;
+        }
+        
+        button.peligro:hover {
+            background-color: #b71c1c;
+        }
+        
+        .info-texto {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #888;
+            line-height: 1.4;
+        }
+        
+        /* Estilos para el área de chat */
+        .chat-header {
+            margin-bottom: 15px;
+        }
+        
+        .chat-messages-container {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            color: #e0e0e0;
+            border: 1px solid #333;
+        }
+        
+        .entrada-container {
+            background-color: #252525;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #333;
+            margin-top: auto;
+        }
+        
+        .mensaje {
+            margin: 10px 0;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+        
+        .usuario {
+            background-color: #2d3436;
+            margin-left: auto;
+            text-align: left;
+            color: #ffffff;
+            border: 1px solid #444;
+        }
+        
+        .artur {
+            background-color: #1e3a5f;
+            margin-right: auto;
+            color: #e0e0e0;
+            border: 1px solid #2980b9;
+        }
+        
+        .entrada {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #mensaje {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+        }
+        
+        #mensaje:focus {
+            outline: none;
+            border-color: #0984e3;
+        }
+        
+        .btn-enviar {
+            padding: 14px 20px;
+            min-width: 80px;
+            background-color: #00b894;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .btn-enviar:hover {
+            background-color: #00a085;
+        }
+        
+        .btn-enviar:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+        
+        /* Scrollbar personalizado */
+        #chat::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #chat::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        #chat::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+        
+        #chat::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                padding: 5px;
+                gap: 5px;
+            }
+            
+            .panel-lateral {
+                width: 100%;
+                height: auto;
+            }
+            
+            .contadores {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .contador {
+                flex: 1;
+                min-width: 150px;
+            }
+            
+            .botones {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            button {
+                flex: 1;
+                min-width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .panel-lateral, .panel-chat {
+                padding: 15px;
+            }
+            
+            .contadores {
+                flex-direction: column;
+            }
+            
+            .botones {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .btn-enviar {
+                min-width: 60px;
+                padding: 14px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Panel lateral izquierdo -->
+        <div class="panel-lateral">
+            <h1>Artur</h1>
+            
+            <div class="header-info">
+                <span class="status-indicator status-online" id="status-indicator"></span>
+                <span id="status-text">Red Neuronal Conversacional</span>
+            </div>
+            
+            <h2>Estado del Sistema</h2>
+            
+            <div class="contadores">
+                <div class="contador">
+                    <span class="etiqueta">Conversaciones</span>
+                    <span class="numero" id="contador-chats">0</span>
+                </div>
+                <div class="contador">
+                    <span class="etiqueta">Datos Entrenados</span>
+                    <span class="numero" id="contador-lineas">0</span>
+                </div>
+                <div class="contador">
+                    <span class="etiqueta">Modelo Activo</span>
+                    <span class="numero" id="contador-modelo">No</span>
+                </div>
+            </div>
+            
+            <div class="botones">
+                <button onclick="limpiarDatos()">Limpiar Datos</button>
+                <button class="peligro" onclick="reiniciarModelo()">Reiniciar Modelo</button>
+            </div>
+            
+            <div class="info-texto">
+                Artur es una red neuronal que aprende de cada conversación para mejorar sus respuestas. Cuanto más hables con él, más inteligente se volverá.
+            </div>
+        </div>
+        
+        <!-- Panel principal de chat -->
+        <div class="panel-chat">
+            <div class="chat-header">
+                <h2>Conversar con Artur</h2>
+            </div>
+            
+            <div class="chat-messages-container">
+                <div id="chat"></div>
+            </div>
+            
+            <div class="entrada-container">
+                <div class="entrada">
+                    <input type="text" id="mensaje" placeholder="Escribe tu mensaje a Artur..." onkeypress="if(event.key=='Enter') enviarMensaje()">
+                    <button class="btn-enviar" onclick="enviarMensaje()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let estadoActual = {};
+        
+        // Actualizar estado del sistema automáticamente
+        function actualizarEstado() {
+            fetch('/estado')
+                .then(r => r.json())
+                .then(data => {
+                    estadoActual = data;
+                    
+                    // Actualizar contadores
+                    document.getElementById('contador-chats').textContent = 
+                        data.conversaciones_chat || 0;
+                    document.getElementById('contador-lineas').textContent = 
+                        data.lineas_data_txt || 0;
+                    
+                    const modeloElem = document.getElementById('contador-modelo');
+                    const statusIndicator = document.getElementById('status-indicator');
+                    const statusText = document.getElementById('status-text');
+                    
+                    if (data.modelo_existe) {
+                        modeloElem.textContent = 'Si';
+                        modeloElem.style.color = '#00b894';
+                        statusIndicator.className = 'status-indicator status-online';
+                        statusText.textContent = 'Red Neuronal Activa';
+                    } else {
+                        modeloElem.textContent = 'No';
+                        modeloElem.style.color = '#d63031';
+                        statusIndicator.className = 'status-indicator status-offline';
+                        statusText.textContent = 'Red Neuronal No Cargada';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al actualizar estado:', error);
+                    const statusIndicator = document.getElementById('status-indicator');
+                    const statusText = document.getElementById('status-text');
+                    statusIndicator.className = 'status-indicator status-offline';
+                    statusText.textContent = 'Error de Conexión';
+                });
+        }
+        
+        // Limpiar datos
+        function limpiarDatos() {
+            if (confirm('¿Seguro que quieres limpiar todos los datos de conversación? Esto no afectará el modelo entrenado.')) {
+                fetch('/limpiar_datos', { method: 'POST' })
+                    .then(r => r.json())
+                    .then(data => {
+                        alert(data.mensaje);
+                        actualizarEstado();
+                    })
+                    .catch(error => {
+                        alert('Error al limpiar datos');
+                        console.error(error);
+                    });
+            }
+        }
+        
+        // Reiniciar modelo
+        function reiniciarModelo() {
+            if (confirm('¿Seguro que quieres reiniciar completamente el modelo de Artur? Esto borrará todo el aprendizaje.')) {
+                fetch('/reiniciar_modelo', { method: 'POST' })
+                    .then(r => r.json())
+                    .then(data => {
+                        alert(data.mensaje);
+                        actualizarEstado();
+                        // Limpiar chat visual
+                        document.getElementById('chat').innerHTML = '';
+                        agregarMensaje("Hola! Soy Artur, una red neuronal conversacional. Mi modelo ha sido reiniciado. Vamos a empezar a aprender de nuevo.", false);
+                    })
+                    .catch(error => {
+                        alert('Error al reiniciar modelo');
+                        console.error(error);
+                    });
+            }
+        }
+        
+        // Funciones del chat
+        function agregarMensaje(texto, esUsuario) {
+            const chat = document.getElementById('chat');
+            const mensajeDiv = document.createElement('div');
+            mensajeDiv.className = `mensaje ${esUsuario ? 'usuario' : 'artur'}`;
+            mensajeDiv.textContent = texto;
+            chat.appendChild(mensajeDiv);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function enviarMensaje() {
+            const input = document.getElementById('mensaje');
+            const botonEnviar = document.querySelector('.btn-enviar');
+            const texto = input.value.trim();
+            
+            if (!texto) return;
+            
+            // Mostrar mensaje del usuario
+            agregarMensaje(texto, true);
+            input.value = '';
+            input.disabled = true;
+            botonEnviar.disabled = true;
+            botonEnviar.textContent = '...';
+            
+            // Enviar al servidor
+            fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: texto })
+            })
+            .then(r => r.json())
+            .then(data => {
+                // Mostrar respuesta de Artur
+                agregarMensaje(data.respuesta, false);
+                
+                // Actualizar estado automáticamente
+                setTimeout(actualizarEstado, 1000);
+            })
+            .catch(error => {
+                agregarMensaje('Error de conexión con el servidor', false);
+                console.error('Error en chat:', error);
+            })
+            .finally(() => {
+                input.disabled = false;
+                botonEnviar.disabled = false;
+                botonEnviar.textContent = 'Enviar';
+                input.focus();
+            });
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            actualizarEstado();
+            // Actualizar cada 15 segundos automáticamente
+            setInterval(actualizarEstado, 15000);
+            
+            // Mensaje de bienvenida de Artur
+            setTimeout(() => {
+                agregarMensaje("Hola! Soy Artur, una red neuronal conversacional. Aprendo de nuestras conversaciones para mejorar. ¡Hablemos!", false);
+            }, 500);
+            
+            // Enfocar el input al cargar
+            document.getElementById('mensaje').focus();
+            
+            // Actualizar estado cuando se hable con Artur
+            document.getElementById('mensaje').addEventListener('input', function() {
+                if (this.value.trim().length > 0) {
+                    actualizarEstado();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
