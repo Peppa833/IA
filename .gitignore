@@ -1,0 +1,38 @@
+# Archivos de datos generados (pueden ser grandes)
+model.pth
+training.lock
+train.log
+chat_logs.txt
+data.txt
+backups/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Sistema
+.DS_Store
+Thumbs.db
